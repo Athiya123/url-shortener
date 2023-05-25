@@ -24,6 +24,18 @@ app.get('/i/github', (req, res) => {
 app.get('/i/google',(req,res)=>{
     res.send('<a href="https://www.google.com">Google</a>')
 })
+
+app.get('/r/google',(req,res)=>{
+    res.redirect('https://google.com');
+})
+app.get('/r/github',(req,res)=>{
+    res.redirect('https://github.com');
+})
+
+app.get('/r',(req,res)=>{
+     const msg = `<b>To redirect the website for Google and Github use the endpoints as: <br><br> <li>/r/google to visit the google website</li> <br> <li>/r/github to visit the github website</li>`;
+    res.send(msg);
+})
 app.listen(3002,()=>{
     console.log("welcome on port 3002");
 })
