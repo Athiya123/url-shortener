@@ -53,7 +53,7 @@ app.post('/map', (req, res) => {
 });
 
 app.get('/mappings', (req, res) => {
-  res.render(mappings);
+  res.send(mappings);
 });
 
 app.listen(3002,()=>{
