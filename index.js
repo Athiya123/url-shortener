@@ -56,6 +56,18 @@ app.get('/mappings', (req, res) => {
   res.send(mappings);
 });
 
+app.get('/r/:alias', (req, res) => {
+  const { alias } = req.params;
+
+  if (mappings.hasOwnProperty(alias)) {
+    const url = mappings[alias];
+    res.redirect(url);
+  } else {
+    res.sendStatus(404);
+  }
+});
+
+
 app.listen(3002,()=>{
     console.log("welcome on port 3002");
 })
