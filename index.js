@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
+const shortid = require('shortid');
 const {connectToDatabase, getDatabase} = require('./db');
 
 app.use(express.json());
@@ -123,7 +124,36 @@ mongoose.connect('mongodb+srv://greesh_5:munny123@cluster0.lvfzzc5.mongodb.net/U
             res.status(500).json({error: 'Internal server error'});
         }
     });
+     
 
+    app.post('/shorten', async (req, res) => {
+      const { url } = req.body;
+
+      try {
+        const id = generateRandomId();
+        const alias = generateAlias();
+        const newMapping = new Mapping({ id, alias, url });
+        await newMapping.save();
+
+        const shortUrl = `${req.hostname}/${alias}`;
+        res.status(201).json({ shortUrl });
+      } catch (error) {
+        console.error('Error saving mapping:', error);
+        res.status(500).json({ error: 'Internal server error' });
+      }
+    });
+  
+
+    function generateRandomId() {
+      return shortid.generate();
+    }
+    
+    function generateAlias() {
+      const timestamp = Date.now().toString();
+      const randomChars = Math.random().toString(36).substring(2, 7);
+      return `${timestamp}-${randomChars}`;
+    }
+    
     app.listen(3002, () => {
         console.log("welcome on port 3002");
     });
