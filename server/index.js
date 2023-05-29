@@ -1,7 +1,6 @@
 const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
-const shortid = require('shortid');
 const {connectToDatabase, getDatabase} = require('./db');
 const shortid = require('shortid');
 const cors = require('cors');
