@@ -2,7 +2,10 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 const {connectToDatabase, getDatabase} = require('./db');
+const shortid = require('shortid');
+const cors = require('cors');
 
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
 
@@ -108,7 +111,7 @@ mongoose.connect('mongodb+srv://greesh_5:munny123@cluster0.lvfzzc5.mongodb.net/U
     });
 
     app.get('/:alias', async (req, res) => {
-        const {alias} = req.params;
+        const alias = req.params.alias;
 
         try {
             const mapping = await Mapping.findOne({alias});
@@ -124,8 +127,23 @@ mongoose.connect('mongodb+srv://greesh_5:munny123@cluster0.lvfzzc5.mongodb.net/U
         }
     });
 
-    app.listen(3002, () => {
-        console.log("welcome on port 3002");
+    app.post('/api/shorten', async(req, res) => {
+        const { url } = req.body;
+        let randomKey = shortid.generate()
+        const shortenedUrl = `http://localhost:5000/${randomKey}`;
+      
+        const short_url = {
+            alias: randomKey,
+            url:url
+        }
+        // You can handle storing the shortened URL in a database here
+        const shortUrl = new Mapping(short_url)
+        await shortUrl.save();
+        res.json({ shortenedUrl });
+      });
+      
+    app.listen(5000, () => {
+        console.log("welcome on port 5000");
     });
 }).catch((error) => {
     console.error('Error connecting to MongoDB Atlas:', error);
