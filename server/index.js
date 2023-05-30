@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 const shortid = require('shortid');
+const crypto = require('crypto');
 
 const {connectToDatabase, getDatabase} = require('./db');
 const cors = require('cors');
@@ -113,7 +114,6 @@ mongoose.connect('mongodb+srv://greesh_5:munny123@cluster0.lvfzzc5.mongodb.net/U
 
     app.get('/:alias', async (req, res) => {
         const alias = req.params.alias;
-
         try {
             const mapping = await Mapping.findOne({alias});
             if (mapping) {
@@ -127,25 +127,37 @@ mongoose.connect('mongodb+srv://greesh_5:munny123@cluster0.lvfzzc5.mongodb.net/U
             res.status(500).json({error: 'Internal server error'});
         }
     });
-
-    app.post('/api/shorten', async(req, res) => {
+    
+    app.post('/api/shorten', async (req, res) => {
         const { url } = req.body;
-        let randomKey = shortid.generate()
-        const shortenedUrl = `https://url2-xngs.onrender.com/${randomKey}`;
-      
-        const short_url = {
-            alias: randomKey,
-            url:url
+        
+        // Check if the URL already exists in the database
+        const existingMapping = await Mapping.findOne({ url });
+        if (existingMapping) {
+          res.json({ shortenedUrl: `https://url2-xngs.onrender.com/${existingMapping.alias}` });
+          return;
         }
+        else{
+        let randomKey = shortid.generate();
+        const shortenedUrl = `https://url2-xngs.onrender.com/${randomKey}`;
+        
+        const short_url = {
+          alias: randomKey,
+          url: url
+        }
+        
         // You can handle storing the shortened URL in a database here
-        const shortUrl = new Mapping(short_url)
+        const shortUrl = new Mapping(short_url);
         await shortUrl.save();
-        res.json({ shortenedUrl });
+        
+        res.json({ shortenedUrl });}
       });
-      
+
+ 
     app.listen(5000, () => {
         console.log("welcome on port 5000");
     });
 }).catch((error) => {
     console.error('Error connecting to MongoDB Atlas:', error);
 });
+
