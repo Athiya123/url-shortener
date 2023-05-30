@@ -8,7 +8,7 @@ function App() {
     e.preventDefault();
 
     try {
-      const response = await fetch('http://localhost:5000/api/shorten', {
+      const response = await fetch('https://url2-xngs.onrender.com/api/shorten', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

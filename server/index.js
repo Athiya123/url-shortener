@@ -2,8 +2,8 @@ const express = require('express');
 const app = express();
 const mongoose = require('mongoose');
 const shortid = require('shortid');
+
 const {connectToDatabase, getDatabase} = require('./db');
-const shortid = require('shortid');
 const cors = require('cors');
 
 app.use(cors());
@@ -131,7 +131,7 @@ mongoose.connect('mongodb+srv://greesh_5:munny123@cluster0.lvfzzc5.mongodb.net/U
     app.post('/api/shorten', async(req, res) => {
         const { url } = req.body;
         let randomKey = shortid.generate()
-        const shortenedUrl = `http://localhost:5000/${randomKey}`;
+        const shortenedUrl = `https://url2-xngs.onrender.com/${randomKey}`;
       
         const short_url = {
             alias: randomKey,
